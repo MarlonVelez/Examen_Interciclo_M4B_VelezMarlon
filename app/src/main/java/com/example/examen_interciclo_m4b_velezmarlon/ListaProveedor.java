@@ -4,6 +4,8 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.view.View;
+import android.widget.Button;
 import android.widget.Toast;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -21,6 +23,7 @@ public class ListaProveedor extends AppCompatActivity {
     private RecyclerView recyclerView;
     private AdapterProveedor adapterProveedor;
     private ArrayList<Proveedor> miProveedor;
+    private Button btnRefrescar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,6 +38,14 @@ public class ListaProveedor extends AppCompatActivity {
         recyclerView.setLayoutManager(layoutManager);
         adapterProveedor = new AdapterProveedor(this,miProveedor);
         recyclerView.setAdapter(adapterProveedor);
+
+        btnRefrescar= findViewById(R.id.btnRefrescar);
+        btnRefrescar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                listarProveedores(null, ListaProveedor.this);
+            }
+        });
 
     }
 

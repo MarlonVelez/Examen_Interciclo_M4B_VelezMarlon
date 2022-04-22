@@ -69,7 +69,7 @@ public class AdapterProveedor extends RecyclerView.Adapter<AdapterProveedor.Prov
 
     public  static class ProveedorViewHolder extends RecyclerView.ViewHolder{
 
-        ImageView categoryImage;
+        ImageView proveedorImage;
         TextView labelRuc;
         TextView labelNombreComercio;
         TextView labelRepresentanteLegal;

@@ -34,22 +34,6 @@ public class SQLiteOpenHelper extends android.database.sqlite.SQLiteOpenHelper{
         sqLiteDatabase.execSQL(TABLA_PROVEEDOR);
     }
 
-    /*public boolean agregarCliente(int id, String cedula, String nombre, String apellido, String telefono, String email){
-        SQLiteDatabase bd= getWritableDatabase();
-        if (bd!=null){
-            try{
-                bd.execSQL("INSERT INTO cliente VALUES('"+id+"','"+cedula+"','"+nombre+"','"+apellido+"','"+telefono+"','"+email+"')");
-                bd.close();
-                return true;
-            }catch (SQLiteConstraintException e){
-                return false;
-            }
-
-        }else{
-            return false;
-        }
-    }*/
-
     public boolean agregarProveedor(String ruc, String nombreComercial, String representanteLegal, String direccion, String telefono, String productos, String credito){
         SQLiteDatabase bd= getWritableDatabase();
         if (bd!=null){
@@ -80,6 +64,12 @@ public class SQLiteOpenHelper extends android.database.sqlite.SQLiteOpenHelper{
                 "telefono='"+telefono+"'," +
                 "productos='"+prodcuto+"', " +
                 "credito="+credito+" WHERE ruc='"+ruc+"'");
+        bd.close();
+    }
+
+    public void eliminarProveedor(String ruc){
+        SQLiteDatabase bd= getWritableDatabase();
+        bd.execSQL("DELETE FROM proveedor WHERE ruc="+ruc);
         bd.close();
     }
 }

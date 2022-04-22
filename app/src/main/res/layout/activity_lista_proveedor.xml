@@ -7,10 +7,18 @@
         android:layout_height="match_parent"
         tools:context=".ListaProveedor">
 
+    <Button
+            android:text="Refrescar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" android:id="@+id/btnRefrescar"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" android:textAllCaps="false"
+            app:layout_constraintTop_toTopOf="parent" app:layout_constraintBottom_toTopOf="@+id/listaProveedores"/>
     <androidx.recyclerview.widget.RecyclerView
-            android:layout_width="409dp"
-            android:layout_height="601dp"
-            app:layout_constraintTop_toTopOf="parent" app:layout_constraintEnd_toEndOf="parent"
+            android:layout_width="413dp"
+            android:layout_height="536dp"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" app:layout_constraintBottom_toBottomOf="parent"
-            android:id="@+id/listaProveedores"/>
+            android:id="@+id/listaProveedores" app:layout_constraintHorizontal_bias="0.4"
+    />
 </androidx.constraintlayout.widget.ConstraintLayout>

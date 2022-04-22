@@ -44,23 +44,7 @@ public class MainActivity extends AppCompatActivity {
         btnGuardar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
-                String ruc= txtRuc.getText().toString();
-                String representante= txtRepresentanteLegal.getText().toString();
-                String nombre= txtNombreComercial.getText().toString();
-                String direccion= txtDireccion.getText().toString();
-                String telefono= txtTelefono.getText().toString();
-                String producto= txtProducto.getText().toString();
-                String credito= txtCredito.getText().toString();
-
-                SQLiteOpenHelper base= new SQLiteOpenHelper(MainActivity.this);
-                boolean bandera= base.agregarProveedor(ruc,nombre,representante,direccion,telefono,producto,credito);
-
-                if (bandera==true){
-                    Toast.makeText(MainActivity.this, "Proveedor agredado", Toast.LENGTH_LONG).show();
-                }else {
-                    Toast.makeText(MainActivity.this, "Error al tratar de agregar", Toast.LENGTH_LONG).show();
-                }
+                agregarProveedor();
             }
         });
 
@@ -78,6 +62,14 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 editarProveedor();
+            }
+        });
+
+        btnBorrar= findViewById(R.id.btnBorrar);
+        btnBorrar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                eliminarCliente();
             }
         });
 
@@ -100,6 +92,25 @@ public class MainActivity extends AppCompatActivity {
         txtCredito.setText(credito);
     }
 
+    public void agregarProveedor(){
+        String ruc= txtRuc.getText().toString();
+        String representante= txtRepresentanteLegal.getText().toString();
+        String nombre= txtNombreComercial.getText().toString();
+        String direccion= txtDireccion.getText().toString();
+        String telefono= txtTelefono.getText().toString();
+        String producto= txtProducto.getText().toString();
+        String credito= txtCredito.getText().toString();
+
+        SQLiteOpenHelper base= new SQLiteOpenHelper(MainActivity.this);
+        boolean bandera= base.agregarProveedor(ruc,nombre,representante,direccion,telefono,producto,credito);
+
+        if (bandera==true){
+            Toast.makeText(MainActivity.this, "Proveedor agredado", Toast.LENGTH_LONG).show();
+            limpiarCampos();
+        }else {
+            Toast.makeText(MainActivity.this, "Error al tratar de agregar", Toast.LENGTH_LONG).show();
+        }
+    }
 
     public void editarProveedor(){
         SQLiteOpenHelper base= new SQLiteOpenHelper(this);
@@ -121,13 +132,7 @@ public class MainActivity extends AppCompatActivity {
                                 txtProducto.getText().toString().trim(),
                                 txtCredito.getText().toString().trim());
 
-                        txtRuc.setText("");
-                        txtNombreComercial.setText("");
-                        txtRepresentanteLegal.setText("");
-                        txtDireccion.setText("");
-                        txtTelefono.setText("");
-                        txtProducto.setText("");
-                        txtCredito.setText("");
+                        limpiarCampos();
 
                         Toast.makeText(MainActivity.this, "Los cambios se han guardado exitosamente", Toast.LENGTH_LONG).show();
                     }
@@ -140,5 +145,39 @@ public class MainActivity extends AppCompatActivity {
                 })
                 .show();
 
+    }
+
+    public void eliminarCliente(){
+        SQLiteOpenHelper base= new SQLiteOpenHelper(this);
+        new AlertDialog.Builder(this)
+                .setTitle("Eliminar")
+                .setMessage("¿Esta seguro de eliminar a este proveedor?")
+                .setIcon(R.drawable.icon_warning)
+                .setPositiveButton("Si", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+
+                        base.eliminarProveedor(txtRuc.getText().toString().trim());
+                        limpiarCampos();
+                        Toast.makeText(MainActivity.this, "Cliente eliminado", Toast.LENGTH_SHORT).show();
+                    }
+                })
+                .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        Toast.makeText(MainActivity.this, "Se cancelo la operacion", Toast.LENGTH_SHORT).show();
+                    }
+                })
+                .show();
+    }
+
+    private void limpiarCampos(){
+        txtRuc.setText("");
+        txtNombreComercial.setText("");
+        txtRepresentanteLegal.setText("");
+        txtDireccion.setText("");
+        txtTelefono.setText("");
+        txtProducto.setText("");
+        txtCredito.setText("");
     }
 }
