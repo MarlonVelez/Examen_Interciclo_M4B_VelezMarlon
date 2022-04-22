@@ -2,14 +2,29 @@ package com.example.examen_interciclo_m4b_velezmarlon;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
+import android.media.MediaScannerConnection;
+import android.net.Uri;
+import android.os.Build;
+import android.os.Environment;
+import android.provider.MediaStore;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Toast;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
+import androidx.core.content.FileProvider;
 import com.example.examen_interciclo_m4b_velezmarlon.base_de_datos.SQLiteOpenHelper;
+
+import java.io.File;
+import java.io.IOException;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -24,6 +39,17 @@ public class MainActivity extends AppCompatActivity {
     private Button btnLista;
     private Button btnEditar;
     private Button btnBorrar;
+    private Button btnImagen;
+    private ImageView imageView;
+    private static final int COD_SELECCIONA = 10;
+    private final int MIS_PERMISOS = 100;
+    private static final int COD_FOTO = 20;
+    private static final String CARPETA_PRINCIPAL = "misImagenesApp/";//directorio principal
+    private static final String CARPETA_IMAGEN = "imagenes";//carpeta donde se guardan las fotos
+    private static final String DIRECTORIO_IMAGEN = CARPETA_PRINCIPAL + CARPETA_IMAGEN;//ruta carpeta de directorios
+    private String path;
+    File fileImagen;
+    Bitmap bitmap;
 
 
     @Override
@@ -40,6 +66,7 @@ public class MainActivity extends AppCompatActivity {
         txtCredito= findViewById(R.id.txtCredito);
 
         btnGuardar= findViewById(R.id.btnGuardarProveedor);
+        imageView= findViewById(R.id.imageView);
 
         btnGuardar.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -70,6 +97,14 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 eliminarCliente();
+            }
+        });
+
+        btnImagen= findViewById(R.id.btnImagen);
+        btnImagen.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mostrarDialogOpciones();
             }
         });
 
@@ -179,5 +214,87 @@ public class MainActivity extends AppCompatActivity {
         txtTelefono.setText("");
         txtProducto.setText("");
         txtCredito.setText("");
+    }
+
+    private void mostrarDialogOpciones() {
+        final CharSequence[] opciones={"Camara","Galeria","Cancelar"};
+        final AlertDialog.Builder builder=new AlertDialog.Builder(MainActivity.this);
+        builder.setTitle("Elige una Opción");
+        builder.setItems(opciones, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                if (opciones[i].equals("Camara")){
+                    abrirCamara();
+                }else{
+                    if (opciones[i].equals("Galeria")){
+                        Intent intent=new Intent(Intent.ACTION_PICK,
+                                MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                        intent.setType("image/");
+                        startActivityForResult(intent.createChooser(intent,"Seleccione"),COD_SELECCIONA);
+
+
+
+                    }else{
+                        dialogInterface.dismiss();
+                    }
+                }
+            }
+        });
+        builder.show();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch (requestCode){
+            case COD_SELECCIONA:
+                Uri miPath=data.getData();
+                imageView.setImageURI(miPath);
+
+                try {
+                    bitmap=MediaStore.Images.Media.getBitmap(MainActivity.this.getContentResolver(),miPath);
+                    imageView.setImageBitmap(bitmap);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+                break;
+            case COD_FOTO:
+                if(requestCode==1 && resultCode==RESULT_OK){
+                    Bundle bundle =data.getExtras();
+                    Bitmap imagen= (Bitmap) bundle.get("data");
+                    imageView.setImageBitmap(imagen);
+                }
+        }
+        bitmap=redimensionarImagen(bitmap,600,800);
+    }
+
+    private Bitmap redimensionarImagen(Bitmap bitmap, float anchoNuevo, float altoNuevo) {
+
+        int ancho=bitmap.getWidth();
+        int alto=bitmap.getHeight();
+
+        if(ancho>anchoNuevo || alto>altoNuevo){
+            float escalaAncho=anchoNuevo/ancho;
+            float escalaAlto= altoNuevo/alto;
+
+            Matrix matrix=new Matrix();
+            matrix.postScale(escalaAncho,escalaAlto);
+
+            return Bitmap.createBitmap(bitmap,0,0,ancho,alto,matrix,false);
+
+        }else{
+            return bitmap;
+        }
+
+
+    }
+
+    private void abrirCamara(){
+        /*Intent intentCamara= new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        if(intentCamara.resolveActivity(getPackageManager())!=null){
+            startActivityForResult(intentCamara,COD_FOTO);
+        }*/
+
     }
 }
