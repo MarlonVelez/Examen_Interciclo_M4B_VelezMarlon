@@ -1,3 +1,11 @@
 <resources>
     <string name="app_name">Examen_Interciclo_M4B_VelezMarlon</string>
+    <string name="labelRUC">R.U.C</string>
+    <string name="nombreComercial">Nombre de Comercial</string>
+    <string name="representanteLegal">Representante Legal</string>
+    <string name="direccion">Direccion</string>
+    <string name="telefono">Telefono</string>
+    <string name="productos">Prodoductos</string>
+    <string name="credito">Credito</string>
+    <string name="imangen">Imagen</string>
 </resources>
